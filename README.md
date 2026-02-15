@@ -1,5 +1,7 @@
 # 💱 React Currency Converter
 
+**Live Demo:** https://abcd1924.github.io/react-currency-converter/
+
 A lightweight currency converter built with React, developed as part of the freeCodeCamp curriculum. This project focuses on state management and performance optimization using React Hooks.
 
 ## Features
