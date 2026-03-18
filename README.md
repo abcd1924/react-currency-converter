@@ -2,27 +2,32 @@
 
 **Live Demo:** https://abcd1924.github.io/react-currency-converter/
 
-A lightweight currency converter built with React, developed as part of the freeCodeCamp curriculum. This project focuses on state management and performance optimization using React Hooks.
+A lightweight currency converter built with React using real-time exchange rates. Developed as part of the freeCodeCamp curriculum and enhanced with live API integration.
 
 ## Features
-* Real-time conversion between multiple currencies (USD, EUR, GBP, JPY).
-* Dynamic calculation based on base rates.
-* Responsive input handling.
+* Real-time conversion between 30+ currencies using live ECB rates
+* Currency swap functionality (⇄ button)
+* Loading and error states for API reliability
+* Responsive design with dynamic currency selection
 
-## Technical Implementation: Why `useMemo`?
-In this specific challenge from freeCodeCamp, the use of the `useMemo` hook was mandatory. 
+## API & Architecture
+This converter uses the [Frankfurter API](https://www.frankfurter.dev/) to fetch real exchange rates from the European Central Bank (updated daily).
 
-While the current calculation is computationally light, the implementation demonstrates how to:
-1.  **Memoize expensive calculations:** Prevent recalculating the entire conversion object on every re-render unless the `amount` or `fromCurrency` changes.
-2.  **Optimize performance:** Ensure that the UI remains fluid by decoupling the conversion logic from the main render cycle.
+**Key implementation details:**
+- Custom `useExchangeRates` hook manages API integration and state management
+- Dynamic currency list populated from API response
+- AbortController prevents race conditions when switching base currencies
+- useMemo optimizes conversion calculations to prevent unnecessary re-renders
 
 ## Tech Stack
 - Library: React
-- State Management: useState
-- Optimization: useMemo
+- State Management: useState, Custom Hooks
+- Optimization: useMemo, AbortController
+- API: Frankfurter (ECB Exchange Rates)
 - Styling: CSS3 / HTML5
 
 ## How to run
-1. Clone the repo: git clone https://github.com/abcd1924/react-currency-converter
-2. Install dependencies: npm install
-3. Start the dev server: npm start
+1. Clone the repo: `git clone https://github.com/abcd1924/react-currency-converter`
+2. Install dependencies: `npm install`
+3. Start the dev server: `npm start`
+4. Open http://localhost:5173/react-currency-converter/ in your browser
