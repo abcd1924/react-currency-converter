@@ -1,31 +1,23 @@
 import React, { useState, useMemo } from "react";
 import "./App.css";
-
-const currencies = {
-  USD: 1,
-  EUR: 0.92,
-  GBP: 0.78,
-  JPY: 156.7
-};
+import { useExchangeRates } from "./hooks/useExhangeRates";
 
 export default function CurrencyConverter() {
-
   const [amount, setAmount] = useState(1);
-  const [fromCurrency, setFromCurrency] = useState(Object.keys(currencies)[0]);
-  const [toCurrency, setToCurrency] = useState(Object.keys(currencies)[1]);
+  const [fromCurrency, setFromCurrency] = useState("USD");
+  const [toCurrency, setToCurrency] = useState("EUR");
 
-  const conversionRates = useMemo(() => {
-    console.log("Calculating base...");
-    const baseAmount = (Number(amount) || 0) / currencies[fromCurrency];
-    const amounts = {};
-    Object.keys(currencies).forEach(currency => {
-      amounts[currency] = (baseAmount * currencies[currency]).toFixed(2);
-    })
+  const { rates, currencies, loading, error } = useExchangeRates(fromCurrency);
 
-    return amounts;
-  }, [amount, fromCurrency]);
+  const convertedAmount = useMemo(() => {
+    if (!rates[toCurrency]) return null;
+    return (Number(amount) * rates[toCurrency]).toFixed(4);
+  }, [amount, toCurrency, rates]);
 
-  const finalAmount = conversionRates[toCurrency]
+  const handleSwap = () => {
+    setFromCurrency(toCurrency);
+    setToCurrency(fromCurrency);
+  };
 
   return (
     <div className="container">
@@ -38,6 +30,7 @@ export default function CurrencyConverter() {
             type="number"
             className="amount-input"
             value={amount}
+            min="0"
             onChange={(e) => setAmount(e.target.value)}
           />
         </div>
@@ -45,28 +38,66 @@ export default function CurrencyConverter() {
         <div className="select-container">
           <div className="select-group">
             <label>From</label>
-            <select value={fromCurrency} onChange={e => setFromCurrency(e.target.value)}>
-              {Object.keys(currencies).map((currency) => (
-                <option key={currency} value={currency}>{currency}</option>
+            <select
+              value={fromCurrency}
+              onChange={(e) => setFromCurrency(e.target.value)}
+            >
+              {currencies.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
           </div>
 
-          <div className="swap-icon">⇄</div>
+          <button
+            className="swap-icon"
+            onClick={handleSwap}
+            title="Swap currencies"
+          >
+            ⇄
+          </button>
 
           <div className="select-group">
             <label>To</label>
-            <select value={toCurrency} onChange={e => setToCurrency(e.target.value)}>
-              {Object.keys(currencies).map((currency) => (
-                <option key={currency} value={currency}>{currency}</option>
+            <select
+              value={toCurrency}
+              onChange={(e) => setToCurrency(e.target.value)}
+            >
+              {currencies.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
           </div>
         </div>
 
         <div className="result-area">
-          <p className="result-label">Converted Amount</p>
-          <span className="result-value">{finalAmount} {toCurrency}</span>
+          {loading && <p className="result-label">Cargando tasas...</p>}
+          {error && (
+            <p className="result-label" style={{ color: "red" }}>
+              Error: {error}
+            </p>
+          )}
+          {!loading && !error && (
+            <>
+              <p className="result-label">Converted Amount</p>
+              <span className="result-value">
+                {convertedAmount} {toCurrency}
+              </span>
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  opacity: 0.6,
+                  marginTop: "0.5rem",
+                }}
+              >
+                Tasas actualizadas por el BCE · 1 {fromCurrency} ={" "}
+                {rates[toCurrency]} {toCurrency}
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
