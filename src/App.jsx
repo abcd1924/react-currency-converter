@@ -11,7 +11,7 @@ export default function CurrencyConverter() {
 
   const convertedAmount = useMemo(() => {
     if (!rates[toCurrency]) return null;
-    return (Number(amount) * rates[toCurrency]).toFixed(4);
+    return (Number(amount) * rates[toCurrency]).toFixed(2);
   }, [amount, toCurrency, rates]);
 
   const handleSwap = () => {
@@ -74,7 +74,7 @@ export default function CurrencyConverter() {
         </div>
 
         <div className="result-area">
-          {loading && <p className="result-label">Cargando tasas...</p>}
+          {loading && <p className="result-label">Loading rates...</p>}
           {error && (
             <p className="result-label" style={{ color: "red" }}>
               Error: {error}
@@ -93,7 +93,7 @@ export default function CurrencyConverter() {
                   marginTop: "0.5rem",
                 }}
               >
-                Tasas actualizadas por el BCE · 1 {fromCurrency} ={" "}
+                Rates updated by the ECB · 1 {fromCurrency} ={" "}
                 {rates[toCurrency]} {toCurrency}
               </p>
             </>
